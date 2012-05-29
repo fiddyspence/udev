@@ -1,0 +1,21 @@
+<% our_mac = scope.lookupvar("::macaddress_#{originaldevice}") -%>
+<% our_name = name -%>
+<% our_gateway = scope.lookupvar("::gateway_#{originaldevice}") -%>
+<% our_device = name -%>
+<% our_netmask = scope.lookupvar("::netmask_#{originaldevice}") -%>
+<% our_ip = scope.lookupvar("::ipaddress_#{originaldevice}") -%>
+HDADDR=<%= our_mac %>
+NAME=<%= our_name %>
+GATEWAY=<%= our_gateway %>
+DOMAIN=ibo.org
+DEVICE=<%= our_device %>
+ONBOOT=yes
+USERCTL=no
+BOOTPROTO=static
+NETMASK=<%= our_netmask %>
+IPADDR=<%= our_ip %>
+PEERDNS=no
+
+check_link_down() {
+ return 1; 
+}
