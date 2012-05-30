@@ -38,30 +38,24 @@ class udev {
 
   if ! $::kernel == "Linux" {
     fail('Do not include the udev class on things that are not Linux')
-  } else {
-    notify { 'Fixing udev': }
-  }
-
-  if ! $::ipaddress_eth0 {
+  } 
+   
+  if ! $::ipaddress_eth0 and ! $::puppet_udev {
     file { '/etc/udev/rules.d/70-persistent-net.rules':
       ensure  => present,
       owner   => 'root',
       group   => 'root',
       mode    => '0644',
       content => template('udev/70-persistent-net.rules.erb'),
-      notify  => Exec['fix-udev'],
     } 
-  } else {
-    notify { "${interfaces} are present": }
-  }
+    file { '/etc/puppet_udev':
+      ensure  => present,
+      content => 'run',
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      require => File['/etc/udev/rules.d/70-persistent-net.rules'],
+    }
+  } 
 
-  exec { 'fix-udev':
-    command     => 'service network restart',
-    refreshonly => 'true',
-    path        => '/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/bin',
-    cwd         => '/tmp',
-    logoutput   => 'true',
-    timeout     => '60',
-  }
-  
 }
