@@ -10,7 +10,7 @@
 # PCI device 0x15ad:0x07b0 (vmxnet3)
 
 <% index_count=0 -%>
-<% array_interfaces=interfaces.split(',').select{ |e| e =~ /eth\d*/ }.sort -%>
+<% array_interfaces=interfaces.split(',').select{ |e| e =~ /eth\d*/ }.sort_by{|s| s.scan(/\d+/).map{|s| s.to_i}} -%>
 <% array_interfaces.each do |interface| -%>
 <% this_interface = scope.lookupvar("::macaddress_#{interface}") -%>
 SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="<%= this_interface -%>", ATTR{type}=="1", KERNEL=="eth*", NAME="<%= interface.gsub(/[\d*]/, index_count.to_s) -%>"

@@ -1,6 +1,10 @@
-ifconfig
+udev
 
-This is the ifconfig module.
+This is the udev module.
+
+Currently it's use is to renumber eth interfaces in the event that, for 
+example, you are using VMWare templates to image Linux 2.6 hosts and the 
+eth interfaces come out in a non-zero indexed way.
 
 License
 -------
