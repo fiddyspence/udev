@@ -38,6 +38,8 @@ class udev {
 
   if ! $::kernel == "Linux" {
     fail('Do not include the udev class on things that are not Linux')
+  } else {
+    notify { 'Fixing udev': }
   }
 
   if ! $::ipaddress_eth0 {
@@ -47,7 +49,19 @@ class udev {
       group   => 'root',
       mode    => '0644',
       content => template('udev/70-persistent-net.rules.erb'),
-    }
+      notify  => Exec['fix-udev'],
+    } 
+  } else {
+    notify { "${interfaces} are present": }
   }
 
+  exec { 'fix-udev':
+    command     => 'service network restart',
+    refreshonly => 'true',
+    path        => '/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/bin',
+    cwd         => '/tmp',
+    logoutput   => 'true',
+    timeout     => '60',
+  }
+  
 }

@@ -1,6 +1,6 @@
 define udev::ifcfg ($originaldevice) {
 
-  if ! defined(File["/etc/sysconfig/network-scripts/ifcfg-${name}"]) {
+  if ! defined(File["/etc/sysconfig/network-scripts/ifcfg-${name}"]) { 
     file { "/etc/sysconfig/network-scripts/ifcfg-${name}":
       ensure  => present,
       content => template('udev/ifcfg-eth.erb'),
@@ -19,12 +19,13 @@ define udev::ifcfg ($originaldevice) {
   }
   if ! defined(File["/etc/sysconfig/network-scripts/ifcfg-${originaldevice}"]) {
     file { "/etc/sysconfig/network-scripts/ifcfg-${originaldevice}":
-      ensure => absent,
-    }
+      ensure => absent, 
+    } 
   } else {
     File ["/etc/sysconfig/network-scripts/ifcfg-${originaldevice}"] {
         ensure => absent,
     }
   }
-
+  File["/etc/sysconfig/network-scripts/ifcfg-${name}"] -> Exec['fix-udev']
+  File ["/etc/sysconfig/network-scripts/ifcfg-${originaldevice}"] -> Exec['fix-udev']
 }
